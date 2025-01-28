@@ -9,29 +9,23 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
  * be any API-aware stuff elsewhere in the frontend.
  *
  */
-
 class JoblyApi {
-  // the token for interacting with the API will be stored here.
-  static token;
-
-  static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
-    // Construct the URL and set headers with token for authorization
-    const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${JoblyApi.token}` };
-    const params = method === "get" ? data : {};
-
-    try {
-      // Make the request using axios
-      return (await axios({ url, method, data, params, headers })).data;
-    } catch (err) {
-      // Log and throw any errors for easier debugging
-      console.error("API Error:", err.response);
-      let message = err.response.data.error.message;
-      throw Array.isArray(message) ? message : [message];
-    }
+  static async login(credentials) {
+    const res = await this.request("auth/token", credentials, "post");
+    return res.token;
   }
+
+  static async signup(newUserData) {
+    const res = await this.request("auth/register", newUserData, "post");
+    return res.token;
+  }
+
+  static async getUser(username) {
+    const res = await this.request(`users/${username}`);
+    return res.user;
+  }
+}
+
 
   // Individual API routes
 
