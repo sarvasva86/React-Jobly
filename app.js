@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
 import jwtDecode from "jwt-decode";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import JoblyApi from "./JoblyApi";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import Navigation from "./Navigation";
 import Homepage from "./Homepage";
+import Profile from "./Profile";
+import Navigation from "./Navigation";
 import UserContext from "./UserContext";
+import useLocalStorage from "./useLocalStorage";
 
 function App() {
+  const [token, setToken] = useLocalStorage("token");
   const [currentUser, setCurrentUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  // Effect to load the current user when the token changes
+  // Load current user when token changes
   useEffect(() => {
     async function fetchCurrentUser() {
       if (token) {
         try {
-          const { username } = jwtDecode(token); // Decode the token to get the username
-          JoblyApi.token = token; // Set the token on the API utility
-          const user = await JoblyApi.getUser(username); // Fetch user data
+          const { username } = jwtDecode(token); // Decode token to get username
+          JoblyApi.token = token; // Set token on the API
+          const user = await JoblyApi.getUser(username); // Fetch user details
           setCurrentUser(user);
         } catch (err) {
           console.error("Error fetching user:", err);
@@ -36,9 +38,8 @@ function App() {
   // Login function
   async function login(credentials) {
     try {
-      const token = await JoblyApi.login(credentials); // Authenticate user
-      setToken(token); // Save token in state
-      localStorage.setItem("token", token); // Persist token in localStorage
+      const newToken = await JoblyApi.login(credentials); // Get token
+      setToken(newToken); // Save token in localStorage
     } catch (err) {
       console.error("Login failed:", err);
       throw err;
@@ -48,9 +49,8 @@ function App() {
   // Signup function
   async function signup(newUserData) {
     try {
-      const token = await JoblyApi.signup(newUserData); // Register user
-      setToken(token); // Save token in state
-      localStorage.setItem("token", token); // Persist token in localStorage
+      const newToken = await JoblyApi.signup(newUserData); // Get token
+      setToken(newToken); // Save token in localStorage
     } catch (err) {
       console.error("Signup failed:", err);
       throw err;
@@ -60,8 +60,7 @@ function App() {
   // Logout function
   function logout() {
     setCurrentUser(null);
-    setToken(null);
-    localStorage.removeItem("token"); // Clear token from localStorage
+    setToken(null); // Clear token from localStorage
   }
 
   return (
@@ -72,6 +71,8 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="/profile" element={currentUser ? <Profile /> : <Navigate to="/login" />} />
+          {/* Add additional protected routes */}
         </Routes>
       </UserContext.Provider>
     </BrowserRouter>
