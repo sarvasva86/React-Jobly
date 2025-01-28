@@ -1,0 +1,19 @@
+.company-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+}
+
+.company-card h3 {
+  margin: 0;
+}
+
+.companies-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+input[type="text"] {
+  padding: 8px;
+  margin: 10px;
+}
