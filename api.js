@@ -47,6 +47,35 @@ class JoblyApi {
     return res.companies;
   }
 
+
+
+  // Make API request
+  static async request(endpoint, data = {}, method = "get") {
+    const url = `${BASE_URL}/${endpoint}`;
+    const headers = { Authorization: `Bearer ${JoblyApi.token}` };
+    const params = (method === "get") ? data : {};
+
+    try {
+      return (await axios({ url, method, data, params, headers })).data;
+    } catch (err) {
+      console.error("API Error:", err.response);
+      let message = err.response.data.error.message;
+      throw Array.isArray(message) ? message : [message];
+    }
+  }
+
+  // Get companies with optional search term
+  static async getCompanies(searchTerm = '') {
+    let res = await this.request('companies', { search: searchTerm });
+    return res.companies;
+  }
+
+  // Get company by handle
+  static async getCompany(handle) {
+    let res = await this.request(`companies/${handle}`);
+    return res.company;
+  }
+
   /** Get a list of jobs */
   static async getJobs() {
     let res = await this.request("jobs");
