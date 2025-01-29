@@ -9,6 +9,7 @@ import Profile from "./Profile";
 import Navigation from "./Navigation";
 import UserContext from "./UserContext";
 import useLocalStorage from "./useLocalStorage";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const [token, setToken] = useLocalStorage("token");
@@ -34,6 +35,51 @@ function App() {
 
     fetchCurrentUser();
   }, [token]);
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} />
+        <Route
+          path="/companies"
+          element={
+            <ProtectedRoute>
+              <CompanyList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/companies/:handle"
+          element={
+            <ProtectedRoute>
+              <CompanyDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <JobsList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+  
 
   // Login function
   async function login(credentials) {
