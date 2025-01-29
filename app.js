@@ -76,6 +76,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+      path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfileForm />
+          </ProtectedRoute>
+  }
+/>
+
+          
       </Routes>
     </BrowserRouter>
   );
