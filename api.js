@@ -116,6 +116,12 @@ static async updateProfile(username, data) {
     return res.user;
   }
 
+  static async applyToJob(jobId) {
+  let res = await this.request(`jobs/${jobId}/apply`, {}, "post");
+  return res.applied; // The backend returns the job ID if the application is successful
+}
+  
+
   // More methods can be added here as needed, such as creating jobs, applying, etc.
 }
 
