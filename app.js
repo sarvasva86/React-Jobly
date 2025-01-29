@@ -22,7 +22,7 @@ function App() {
         try {
           const { username } = jwtDecode(token); // Decode token to get username
           JoblyApi.token = token; // Set token on the API
-          const user = await JoblyApi.getUser(username); // Fetch user details
+          const user = await JoblyApi.getCurrentUser(username); // Fetch user details
           setCurrentUser(user);
         } catch (err) {
           console.error("Error fetching user:", err);
