@@ -41,6 +41,10 @@ class JoblyApi {
     return res.companies;
   }
 
+static async updateProfile(username, data) {
+  let res = await this.request(`users/${username}`, data, "patch");
+  return res.user;
+}
 
 
   // Make API request
